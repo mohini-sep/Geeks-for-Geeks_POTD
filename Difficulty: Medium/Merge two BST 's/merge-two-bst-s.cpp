@@ -94,46 +94,64 @@ struct Node {
 */
 class Solution {
   public:
-    // Function to return a list of integers denoting the node
-    // values of both the BST in a sorted order.
-    vector<int> arr1,arr2;
-    void inorder(Node *root,bool flag){
-        if(!root){
-            return ;
+    void store_left(Node* root,stack<Node*>& st){
+        Node* curr = root;
+        while(curr != NULL){
+            st.push(curr);
+            curr = curr->left;
         }
-        inorder(root->left,flag);
-        if(!flag){
-            arr1.push_back(root->data);
-        }
-        else{
-            arr2.push_back(root->data);
-        }
-        inorder(root->right,flag);
-        
     }
     vector<int> merge(Node *root1, Node *root2) {
+        stack<Node*> st1,st2;
         
-        inorder(root1,0);
-        inorder(root2,1);
         vector<int> ans;
-        int i=0,j=0;
-        while(i<arr1.size() && j<arr2.size()){
-            if(arr1[i]>arr2[j]){
-                ans.push_back(arr2[j++]);
+        
+        store_left(root1,st1);
+        store_left(root2,st2);
+        
+        while(!st1.empty() && !st2.empty()){
+            
+            if(st1.top()->data < st2.top()->data){
+                Node* curr = st1.top();
+                st1.pop();
+                ans.push_back(curr->data);
+                store_left(curr->right,st1);
+            }
+            else if(st2.top()->data < st1.top()->data){
+                Node* curr = st2.top();
+                st2.pop();
+                ans.push_back(curr->data);
+                store_left(curr->right,st2);
             }
             else{
-                ans.push_back(arr1[i++]);
+                Node* curr1 = st1.top();
+                Node* curr2 = st2.top();
+                
+                st1.pop();
+                st2.pop();
+                
+                ans.push_back(curr1->data);
+                ans.push_back(curr2->data);
+                
+                
+                store_left(curr1->right,st1);
+                store_left(curr2->right,st2);
             }
         }
-        while(i<arr1.size()){
-            ans.push_back(arr1[i++]);
-        }
-        while(j<arr2.size()){
-            ans.push_back(arr2[j++]);
-        }
         
+        while(!st1.empty()){
+            Node* curr1 = st1.top();
+            st1.pop();
+            ans.push_back(curr1->data);
+            store_left(curr1->right,st1);
+        }
+        while(!st2.empty()){
+            Node* curr2 = st2.top();
+            st2.pop();
+            ans.push_back(curr2->data);
+            store_left(curr2->right,st2);
+        }
         return ans;
-        
     }
 };
 
