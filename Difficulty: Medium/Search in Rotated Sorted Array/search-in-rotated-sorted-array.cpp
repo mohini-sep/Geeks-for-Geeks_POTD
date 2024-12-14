@@ -8,29 +8,25 @@ class Solution {
   public:
     int search(vector<int>& arr, int key) {
         // complete the function here
-        int n=arr.size();
-        int s=0;
-        int e=n-1;
-        while(s<=e){
-            int mid=(s+e)/2;
-            
-            if(arr[mid]==key)
-            return mid;
-            
-            if(arr[s]<=arr[mid]){
-                //left wale array
-                if(arr[s]<=key && key <= arr[mid])
-                e=mid-1;
-                else
-                s=mid+1;
-                
+        int lo=0, hi=arr.size()-1;
+        while(lo<=hi){
+            int mid=(lo+hi)/2;
+            if(arr[mid]==key) return mid;
+            if(arr[lo]<=arr[mid]){
+                if(key>=arr[lo] && key<=arr[mid]){
+                    hi=mid-1;
+                }
+                else{
+                    lo=mid+1;
+                }
             }
             else{
-            //right wale array
-            if(arr[mid]<=key && key<= arr[e])
-            s=mid+1;
-            else
-            e=mid-1;
+                if(arr[mid]<=key && arr[hi]>=key){
+                    lo=mid+1;
+                }
+                else{
+                    hi=mid-1;
+                }
             }
         }
         return -1;
@@ -55,6 +51,7 @@ int main() {
         cin >> key;
         Solution ob;
         cout << ob.search(arr, key) << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
