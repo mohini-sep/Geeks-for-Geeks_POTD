@@ -6,43 +6,33 @@ using namespace std;
 // } Driver Code Ends
 class Solution {
   public:
-    vector<int> spirallyTraverse(vector<vector<int> > &matrix) {
+    vector<int> spirallyTraverse(vector<vector<int> > &mat) {
         // code here
-        int row=matrix.size();
-        int col=matrix[0].size();
-        int count=0;
-        vector<int> ans;
-        
-        int startingRow=0;
-        int startingCol=0;
-        int endingRow=row-1;
-        int endingCol=col-1;
-        
-        while(count < row*col){
-            //pehli row left to right
-            for(int i=startingCol;count < row*col && i<=endingCol;i++){
-                ans.push_back(matrix[startingRow][i]);
-                count++;
+        vector<int>ans;
+        int top=0, left=0, bottom=mat.size()-1, right=mat[0].size()-1;
+        while(top<=bottom && left<=right){
+            for(int i=left;i<=right;i++){
+                ans.push_back(mat[top][i]);
             }
-            startingRow++;
-            //last col top to bottom
-            for(int i=startingRow;count < row*col && i<=endingRow;i++){
-                ans.push_back(matrix[i][endingCol]);
-                count++;
+            top++;
+            if(top>bottom) break;
+            
+            for(int i=top;i<=bottom;i++){
+                ans.push_back(mat[i][right]);
             }
-            endingCol--;
-            //last row right to left
-            for(int i=endingCol;count < row*col && i>=startingCol;i--){
-                ans.push_back(matrix[endingRow][i]);
-                count++;
+            right--;
+            if(left>right) break;
+            
+            for(int i=right;i>=left;i--){
+                ans.push_back(mat[bottom][i]);
             }
-            endingRow--;
-            //pehla col bottom to up
-            for(int i=endingRow;count < row*col && i>=startingRow;i--){
-                ans.push_back(matrix[i][startingCol]);
-                count++;
+            bottom--;
+            if(top>bottom) break;
+            
+            for(int i=bottom;i>=top;i--){
+                ans.push_back(mat[i][left]);
             }
-            startingCol++;
+            left++;
         }
         return ans;
     }
@@ -56,9 +46,10 @@ int main() {
     while (t--) {
         int r, c;
         cin >> r >> c;
-        vector<vector<int>> matrix(r, vector<int>(c, 0));
+        vector<vector<int>> matrix(r);
 
         for (int i = 0; i < r; i++) {
+            matrix[i].assign(c, 0);
             for (int j = 0; j < c; j++) {
                 cin >> matrix[i][j];
             }
@@ -69,6 +60,9 @@ int main() {
         for (int i = 0; i < result.size(); ++i)
             cout << result[i] << " ";
         cout << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
