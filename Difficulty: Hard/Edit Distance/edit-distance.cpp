@@ -1,46 +1,53 @@
 //{ Driver Code Starts
+// Initial Template for C++
 #include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
+
 class Solution {
   public:
-    int editDistance(string str1, string str2) {
-        // Code here
-        int n=str1.length(),m=str2.length();
-        int dp[n+1][m+1];
-        for(int i=0;i<=n;i++){
-            dp[i][0]=i;
+    // Function to compute the edit distance between two strings
+    int dp[1001][1001];
+    int solve(string& s1, string& s2,int i,int j){
+        //base case
+        if(i==s1.length()) return s2.length()-j;
+        if(j==s2.length()) return s1.length()-i;
+        //recursive case
+        if(dp[i][j]!=-1) return dp[i][j];
+        if(s1[i]==s2[j]) return dp[i][j]= solve(s1,s2,i+1,j+1);
+        else{
+            int insert=1+solve(s1,s2,i,j+1);
+            int dele=1+ solve(s1,s2,i+1,j);
+            int replace=1+ solve(s1,s2,i+1,j+1);
+            return dp[i][j]=  min({insert,dele,replace});
         }
-        for(int j=0;j<=m;j++){
-            dp[0][j]=j;
-        }
-        for(int i=1;i<=n;i++){
-            for(int j=1;j<=m;j++){
-                if(str1[i-1]==str2[j-1]){
-                    dp[i][j]=dp[i-1][j-1];
-                }
-                else{
-                    dp[i][j]=1+min({dp[i-1][j-1],dp[i][j-1],dp[i-1][j]});
-                }
-            }
-        }
-        return dp[n][m];
+    }
+    int editDistance(string& s1, string& s2) {
 
+        memset(dp,-1,sizeof(dp));
+        return solve(s1,s2,0,0);
     }
 };
 
+
 //{ Driver Code Starts.
+
 int main() {
+
     int T;
     cin >> T;
+    cin.ignore();
     while (T--) {
-        string s, t;
-        cin >> s >> t;
+        string s1;
+        getline(cin, s1);
+        string s2;
+        getline(cin, s2);
         Solution ob;
-        int ans = ob.editDistance(s, t);
+        int ans = ob.editDistance(s1, s2);
         cout << ans << "\n";
+        cout << "~" << endl;
     }
     return 0;
 }
