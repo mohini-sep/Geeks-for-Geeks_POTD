@@ -1,96 +1,68 @@
 //{ Driver Code Starts
-// Program to find the maximum profit job sequence from a given array 
-// of jobs with deadlines and profits 
-#include<bits/stdc++.h>
-using namespace std; 
-
-// A structure to represent a job 
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-}; 
+// Driver code
+#include <bits/stdc++.h>
+using namespace std;
 
 
 // } Driver Code Ends
-/*
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-};
-*/
 
-class Solution 
-{
-    public:
-    static bool comp(Job j1, Job j2){
-        return j1.dead < j2.dead;
-    }
-    
-    //Function to find the maximum profit and the number of jobs done.
-    vector<int> JobScheduling(Job arr[], int n) 
-    { 
-        // your code here
-        sort(arr, arr+n, comp);
-        int curr=0, points=0;
-        priority_queue<int, vector<int>, greater<int>>pq;
-        
+class Solution {
+  public:
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        // code here
+        int n=deadline.size();
+        vector<pair<int,int>>v;
         for(int i=0;i<n;i++){
-            if(arr[i].dead>curr){
-                points+=arr[i].profit;
-                pq.push(arr[i].profit);
+            v.push_back({deadline[i], profit[i]});
+        }
+        sort(v.begin(), v.end());
+        
+        priority_queue<int, vector<int>, greater<int>>pq;
+        int curr=0, points=0;
+        for(int i=0;i<n;i++){
+            if(v[i].first > curr){
                 curr++;
+                points+=v[i].second;
+                pq.push(v[i].second);
             }
-            else{
-                if(arr[i].profit > pq.top()){
-                    points-=pq.top();
-                    pq.pop();
-                    
-                    points+=arr[i].profit;
-                    pq.push(arr[i].profit);
-                }
+            else if(v[i].second > pq.top()){
+                points-=pq.top();
+                pq.pop();
+                points+=v[i].second;
+                pq.push(v[i].second);
             }
         }
         return {curr, points};
-        
-        
-    } 
+    }
 };
 
+
 //{ Driver Code Starts.
-// Driver program to test methods 
-int main() 
-{ 
+
+int main() {
     int t;
-    //testcases
     cin >> t;
-    
-    while(t--){
-        int n;
-        
-        //size of array
-        cin >> n;
-        Job arr[n];
-        
-        //adding id, deadline, profit
-        for(int i = 0;i<n;i++){
-                int x, y, z;
-                cin >> x >> y >> z;
-                arr[i].id = x;
-                arr[i].dead = y;
-                arr[i].profit = z;
-        }
-        Solution ob;
-        //function call
-        vector<int> ans = ob.JobScheduling(arr, n);
-        cout<<ans[0]<<" "<<ans[1]<<endl;
+    cin.ignore();
+    while (t--) {
+        vector<int> deadlines, profits;
+        string temp;
+        getline(cin, temp);
+        int x;
+        istringstream ss1(temp);
+        while (ss1 >> x)
+            deadlines.push_back(x);
+
+        getline(cin, temp);
+        istringstream ss2(temp);
+        while (ss2 >> x)
+            profits.push_back(x);
+
+        Solution obj;
+        vector<int> ans = obj.jobSequencing(deadlines, profits);
+        cout << ans[0] << " " << ans[1] << endl;
+        cout << "~" << endl;
     }
-	return 0; 
+    return 0;
 }
-
-
 
 // } Driver Code Ends
